@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from typing import List
+from os import getpid
+
 
 @dataclass
 class MemoryUsage:
@@ -20,5 +22,4 @@ class NodeInfo:
     hostname: str
     cpu: CpuUsage
     memory: MemoryUsage
-
-
+    pid: int = getpid()

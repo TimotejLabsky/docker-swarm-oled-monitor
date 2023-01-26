@@ -11,7 +11,7 @@ BUFFER_SIZE = 1024
 
 
 def send_node_info(socket: socket, node_info: NodeInfo) -> None:
-    s.sendall(dumps(node_info))
+    socket.sendall(dumps(node_info))
 
 m = Monitor()
 
@@ -20,6 +20,8 @@ with socket(AF_INET, SOCK_STREAM) as s:
     s.connect((HOST, PORT))
 
     m.add_callback(lambda x: send_node_info(s, x))
+    m.add_callback(lambda x: print(f'Sending Node Info\n{x}'))
+
     m.start()
 
     sleep(100)
