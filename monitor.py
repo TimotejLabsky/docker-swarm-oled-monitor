@@ -52,8 +52,9 @@ class Monitor(Thread):
 
     def run(self) -> None:
         while self.__run:
+            node_info: NodeInfo = self.get_node_info()
             for callback in self.__callbacks:
-                callback(self.get_node_info())
+                callback(node_info)
             sleep(self.__check_interval)
 
     def stop(self) -> None:
