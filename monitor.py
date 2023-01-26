@@ -5,6 +5,7 @@ from threading import Thread
 from typing import Callable, List
 from time import sleep
 
+# sensors_temperatures is not available on Windows or Mac
 try:
     from psutil import sensors_temperatures
 except ImportError:
@@ -21,7 +22,7 @@ except ImportError:
             return f"shwtemp(label='{self.label}', current={self.current}, high={self.high}, critical={self.critical})"
 
     def sensors_temperatures():
-        return {'cpu_thermal': [shwtemp(label='', current=uniform(15.0, 80.0), high=None, critical=None)]}
+        return {'cpu_thermal': [shwtemp(label='DUMMY VALUES !!!', current=uniform(15.0, 80.0), high=None, critical=None)]}
 
 
 class Monitor(Thread):
