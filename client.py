@@ -8,21 +8,31 @@ from time import sleep
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 BUFFER_SIZE = 1024
+CHECK_INTERVAL = 1
 
 
 def send_node_info(socket: socket, node_info: NodeInfo) -> None:
     socket.sendall(dumps(node_info))
 
-m = Monitor()
 
 
-with socket(AF_INET, SOCK_STREAM) as s:
-    s.connect((HOST, PORT))
+def start_client(socket: socket, monitor: Monitor):
+    socket.connect((HOST, PORT))
 
-    m.add_callback(lambda x: send_node_info(s, x))
-    m.add_callback(lambda x: print(f'Sending Node Info\n{x}'))
+    monitor.add_callback(lambda x: send_node_info(s, x))
+    monitor.add_callback(lambda x: print(f'Sending Node Info\n{x}'))
 
-    m.start()
+    monitor.start()
 
-    sleep(100)
-    m.stop()
+if __name__ == '__main__':
+    monitor = Monitor(CHECK_INTERVAL)
+
+    with socket(AF_INET, SOCK_STREAM) as s:
+        try:
+            start_client(s , monitor)
+            while True:
+                sleep(CHECK_INTERVAL)
+        except KeyboardInterrupt:
+            monitor.stop()
+            monitor.join()
+            print('Client stopped')

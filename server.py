@@ -20,7 +20,7 @@ def handle_connected_client(client_socket: socket):
             if not data:
                 break
             node_info: NodeInfo = loads(data)
-            # pprint(node_info)
+            print(node_info)
             print(node_info.pid)
 
 threads : List[Thread] = []
@@ -30,7 +30,7 @@ def start_server():
     print('Starting server...')
     with socket(AF_INET, SOCK_STREAM) as s:
         s.bind((HOST, PORT))
-        s.settimeout(5)
+        # s.settimeout(5)
         s.listen()
         while run:
             conn, addr = s.accept()
@@ -49,6 +49,7 @@ def stop_server():
     print('Server stopped')
 
 if __name__ == '__main__':
-    start_server()
-    sleep(10)
-    stop_server()
+    try:
+        start_server()
+    except KeyboardInterrupt:
+        stop_server()
