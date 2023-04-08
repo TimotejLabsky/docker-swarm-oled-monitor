@@ -1,9 +1,7 @@
 from psutil import virtual_memory, cpu_percent, cpu_count
 from socket import gethostname, gethostbyname
-from model.node_info import NodeInfo, CpuUsage, MemoryUsage
-from threading import Thread
+from model.model import NodeInfo, CpuUsage, MemoryUsage
 from typing import Callable, List
-from time import sleep
 
 # sensors_temperatures is not available on Windows or Mac
 try:
@@ -25,14 +23,11 @@ except ImportError:
         return {'cpu_thermal': [shwtemp(label='DUMMY VALUES !!!', current=uniform(15.0, 80.0), high=None, critical=None)]}
 
 
-class Monitor(Thread):
-    def __init__(self, check_interval: int = 1) -> None:
-        super().__init__()
+class Monitor():
+    def __init__(self) -> None:
         self.__hostname: str = gethostname()
         self.__ip: str = gethostbyname(self.__hostname)
-        self.__check_interval: int = check_interval
         self.__callbacks: List[Callable[[], NodeInfo]] = []
-        self.__run: bool = True
 
     @staticmethod
     def get_memory_usage() -> MemoryUsage:
@@ -51,11 +46,6 @@ class Monitor(Thread):
         return NodeInfo(self.__ip, self.__hostname, Monitor.get_cpu_usage(), Monitor.get_memory_usage())
 
     def run(self) -> None:
-        while self.__run:
-            node_info: NodeInfo = self.get_node_info()
-            for callback in self.__callbacks:
-                callback(node_info)
-            sleep(self.__check_interval)
-
-    def stop(self) -> None:
-        self.__run = False
+        node_info: NodeInfo = self.get_node_info()
+        for callback in self.__callbacks:
+            callback(node_info)
