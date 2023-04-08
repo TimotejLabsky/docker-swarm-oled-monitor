@@ -5,7 +5,7 @@ from threading import Thread
 from typing import List, Dict
 from os import environ
 
-HOST = environ.get('HOST', '127.0.0.1')  # Standard loopback interface address (localhost)
+HOST = environ.get('HOST', '0.0.0.0')  # Standard loopback interface address (localhost)
 PORT = environ.get('PORT', 65432)        # Port to listen on (non-privileged ports are > 1023)
 BUFFER_SIZE = environ.get('SOCKET_BUFFER_SIZE', 1024) 
 
@@ -20,6 +20,7 @@ def handle_connected_client(client_socket: socket):
         while run:
             data = client_socket.recv(BUFFER_SIZE)
             if not data:
+                print('Disconnected')
                 break
             node_info: NodeInfo = loads(data) #TODO save to file
             last_node_info[node_info.hostname] = node_info
@@ -32,6 +33,7 @@ def start_server():
     with socket(AF_INET, SOCK_STREAM) as s:
         s.bind((HOST, PORT))
         s.listen()
+        print(f'Server started on {HOST}:{PORT}')
         while run:
             conn, addr = s.accept()
             print(f'Connected by {addr}')
