@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: monitor-agent
+  IMAGE_NAME: docker-swarm-monitor-agent
 
 jobs:
   build-and-push-image:
