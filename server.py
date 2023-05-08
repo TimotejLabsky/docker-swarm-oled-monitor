@@ -32,7 +32,7 @@ def handle_connected_client(client_socket: socket, log_hander: Handler):
         while run:
             data = client_socket.recv(BUFFER_SIZE)
             if not data:
-                log.warn('Disconnected')
+                log.warning('Disconnected')
                 break
             node_info: NodeInfo = loads(data) #TODO save to file
             log.info(f"{node_info}")
