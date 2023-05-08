@@ -9,7 +9,8 @@ from logging.handlers import RotatingFileHandler
 
 HOST = environ.get('HOST', '0.0.0.0')  # Standard loopback interface address (localhost)
 PORT = environ.get('PORT', 65433)        # Port to listen on (non-privileged ports are > 1023)
-BUFFER_SIZE = environ.get('SOCKET_BUFFER_SIZE', 1024) 
+BUFFER_SIZE = environ.get('SOCKET_BUFFER_SIZE', 1024)
+NODE_INFO_LOG_FOLDER = environ.get('NODE_INFO_LOG_FOLDER', './')
 
 run: bool = True
 
@@ -43,7 +44,7 @@ def start_server():
     global run
     log.info('Starting server...')
 
-    fh: RotatingFileHandler = RotatingFileHandler('node_info.log', backupCount=3, maxBytes=1024*1024*10)
+    fh: RotatingFileHandler = RotatingFileHandler(f'{NODE_INFO_LOG_FOLDER}node_info.log', backupCount=3, maxBytes=1024*1024*10)
     fh.setFormatter(Formatter('%(asctime)s %(name)s %(message)s'))
 
     with socket(AF_INET, SOCK_STREAM) as s:
