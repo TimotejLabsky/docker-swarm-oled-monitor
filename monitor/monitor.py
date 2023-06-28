@@ -2,6 +2,7 @@ from psutil import virtual_memory, cpu_percent, cpu_count
 from socket import gethostname, gethostbyname
 from model.model import NodeInfo, CpuUsage, MemoryUsage
 from typing import Callable, List
+from os import environ
 
 # sensors_temperatures is not available on Windows or Mac
 try:
@@ -25,8 +26,8 @@ except ImportError:
 
 class Monitor():
     def __init__(self) -> None:
-        self.__hostname: str = gethostname()
-        self.__ip: str = gethostbyname(self.__hostname)
+        self.__hostname: str = environ.get('HOSTNAME', gethostname())
+        self.__ip: str = environ.get('HOST_IP', Monitor.__get_ip_by_host_name(self.__hostname))
         self.__callbacks: List[Callable[[], NodeInfo]] = []
 
     @staticmethod
@@ -49,3 +50,10 @@ class Monitor():
         node_info: NodeInfo = self.get_node_info()
         for callback in self.__callbacks:
             callback(node_info)
+
+    @staticmethod
+    def __get_ip_by_host_name(hostname: str) -> str:
+        try:
+            return gethostbyname(hostname)
+        except:
+            return gethostbyname(gethostname())

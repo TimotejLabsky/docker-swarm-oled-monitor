@@ -15,6 +15,8 @@ services:
     image: "monitor-agent"
     environment:
       - HOST=server
+      - HOSTNAME='{{.Node.Hostname}}'
+      - HOST_IP='{{.Node.IP}}'
     deploy:
       mode: global
       placement:
