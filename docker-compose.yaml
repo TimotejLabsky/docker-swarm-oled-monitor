@@ -16,7 +16,7 @@ services:
     environment:
       - HOST=server
       - HOSTNAME='{{.Node.Hostname}}'
-      - HOST_IP='{{.Node.IP}}'
+      # - HOST_IP='{{.Status.Addr}}'
     deploy:
       mode: global
       placement:
